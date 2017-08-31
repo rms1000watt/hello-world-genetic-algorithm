@@ -13,6 +13,7 @@ func NewSimplePopulation(size int) Population {
 	for i := 0; i < size; i++ {
 		population = append(population, NewSimpleIndividual())
 	}
+
 	return population
 }
 
@@ -21,11 +22,12 @@ func (p SimplePopulation) Grade() int {
 	for _, i := range p {
 		grade += i.Fit()
 	}
+
 	return grade / int(len(p))
 }
 
 func (p SimplePopulation) Sort() Population {
-	ints := []int{}
+	var ints []int
 	for _, i := range p {
 		ints = append(ints, i.Value().(int))
 	}
@@ -36,6 +38,7 @@ func (p SimplePopulation) Sort() Population {
 	for _, i := range ints {
 		newPop = append(newPop, SimpleIndividual(i))
 	}
+
 	return newPop
 }
 
@@ -46,7 +49,8 @@ func (p SimplePopulation) Best(size int) Population {
 	}
 
 	var newPop SimplePopulation
-	for i := len(p) - 1; i > size; i-- {
+	for i := len(p) - 1; i > len(p)-size-1; i-- {
+		// for i := 0; i < size; i-- {
 		newPop = append(newPop, p[i])
 	}
 
@@ -57,6 +61,7 @@ func (p SimplePopulation) Merge(pop Population) Population {
 	for _, ind := range pop.(SimplePopulation) {
 		p = append(p, ind)
 	}
+
 	return p
 }
 
@@ -74,4 +79,18 @@ func (p SimplePopulation) Mutate(mutationFactor int) Population {
 		newPop = append(newPop, ind)
 	}
 	return newPop
+}
+
+func (p SimplePopulation) At(i int) Individual {
+	return p[i]
+}
+
+func (p SimplePopulation) Add(ind Individual) Population {
+	simpleInd, ok := ind.(SimpleIndividual)
+	if !ok {
+		fmt.Println("ADD: Indivdual not SimpleIndividual.. appending NewSimpleIndividual")
+		return append(p, NewSimpleIndividual())
+	}
+
+	return append(p, simpleInd)
 }

@@ -1,5 +1,7 @@
 package simple
 
+// Grade is rated from 0 - 100
+// where 0 is worst and 100 is best
 type Population interface {
 	Grade() int
 	Sort() Population
@@ -7,4 +9,6 @@ type Population interface {
 	Merge(Population) Population
 	Length() int
 	Mutate(int) Population
+	At(int) Individual
+	Add(Individual) Population
 }

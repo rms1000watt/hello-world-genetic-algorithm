@@ -39,3 +39,5 @@ Run Time: 3.43785641s
 - https://lethain.com/genetic-algorithms-cool-name-damn-simple/
 
 ## TODO
+
+- [ ] Create concurrent example

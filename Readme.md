@@ -4,8 +4,35 @@
 
 ## Contents
 
+- [Installation](#installation)
+- [Usage](#usage)
 - [References](#references)
 - [TODO](#todo)
+
+## Installation
+
+Make sure you have a working Golang env, then:
+
+```bash
+go get github.com/rms1000watt/hello-world-genetic-algorithm
+cd $(go env GOPATH)/src/github.com/rms1000watt/hello-world-genetic-algorithm
+```
+
+## Usage
+
+```bash
+go run main.go
+```
+
+You should see an output like:
+
+```
+Population Size: 10000
+Iterations: 1000
+Start Grade: 49
+Done Grade: 85
+Run Time: 3.43785641s
+```
 
 ## References
 

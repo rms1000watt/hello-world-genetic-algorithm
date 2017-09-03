@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"math/rand"
 	"sort"
+
+	"github.com/rms1000watt/hello-world-genetic-algorithm/ga"
 )
 
-type SimplePopulation []Individual
+type SimplePopulation []ga.Individual
 
-func NewSimplePopulation(size int) Population {
+func NewSimplePopulation(size int) ga.Population {
 	var population SimplePopulation
 	for i := 0; i < size; i++ {
 		population = append(population, NewSimpleIndividual())
@@ -26,7 +28,7 @@ func (p SimplePopulation) Grade() int {
 	return grade / int(len(p))
 }
 
-func (p SimplePopulation) Sort() Population {
+func (p SimplePopulation) Sort() ga.Population {
 	var ints []int
 	for _, i := range p {
 		ints = append(ints, i.Value().(int))
@@ -42,7 +44,7 @@ func (p SimplePopulation) Sort() Population {
 	return newPop
 }
 
-func (p SimplePopulation) Best(size int) Population {
+func (p SimplePopulation) Best(size int) ga.Population {
 	if size > len(p) {
 		fmt.Println("BEST: size > len(population).. returning all..")
 		return p
@@ -57,7 +59,7 @@ func (p SimplePopulation) Best(size int) Population {
 	return newPop
 }
 
-func (p SimplePopulation) Merge(pop Population) Population {
+func (p SimplePopulation) Merge(pop ga.Population) ga.Population {
 	for _, ind := range pop.(SimplePopulation) {
 		p = append(p, ind)
 	}
@@ -69,7 +71,7 @@ func (p SimplePopulation) Length() int {
 	return len(p)
 }
 
-func (p SimplePopulation) Mutate(mutationFactor int) Population {
+func (p SimplePopulation) Mutate(mutationFactor int) ga.Population {
 	var newPop SimplePopulation
 	for _, ind := range p {
 		if rand.Intn(100) > mutationFactor {
@@ -81,11 +83,11 @@ func (p SimplePopulation) Mutate(mutationFactor int) Population {
 	return newPop
 }
 
-func (p SimplePopulation) At(i int) Individual {
+func (p SimplePopulation) At(i int) ga.Individual {
 	return p[i]
 }
 
-func (p SimplePopulation) Add(ind Individual) Population {
+func (p SimplePopulation) Add(ind ga.Individual) ga.Population {
 	simpleInd, ok := ind.(SimpleIndividual)
 	if !ok {
 		fmt.Println("ADD: Indivdual not SimpleIndividual.. appending NewSimpleIndividual")

@@ -2,11 +2,13 @@ package simple
 
 import (
 	"math/rand"
+
+	"github.com/rms1000watt/hello-world-genetic-algorithm/ga"
 )
 
 type SimpleEvolver struct{}
 
-func (e SimpleEvolver) Evolve(pop Population, retain, mutationFactor int) Population {
+func (e SimpleEvolver) Evolve(pop ga.Population, retain, mutationFactor int, migrationCh chan ga.Individual) ga.Population {
 	// Get the population size for later
 	popSize := pop.Length()
 
@@ -43,6 +45,6 @@ func (e SimpleEvolver) Evolve(pop Population, retain, mutationFactor int) Popula
 	return pop
 }
 
-func NewSimpleEvolver() Evolver {
+func NewSimpleEvolver() ga.Evolver {
 	return SimpleEvolver{}
 }

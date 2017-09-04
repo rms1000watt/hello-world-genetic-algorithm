@@ -10,5 +10,6 @@ type Population interface {
 	Length() int
 	Mutate(int) Population
 	At(int) Individual
-	Add(Individual) Population
+	Push(Individual) Population
+	Pop() (Population, Individual)
 }

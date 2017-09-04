@@ -87,7 +87,7 @@ func (p SimplePopulation) At(i int) ga.Individual {
 	return p[i]
 }
 
-func (p SimplePopulation) Add(ind ga.Individual) ga.Population {
+func (p SimplePopulation) Push(ind ga.Individual) ga.Population {
 	simpleInd, ok := ind.(SimpleIndividual)
 	if !ok {
 		fmt.Println("ADD: Indivdual not SimpleIndividual.. appending NewSimpleIndividual")
@@ -95,4 +95,8 @@ func (p SimplePopulation) Add(ind ga.Individual) ga.Population {
 	}
 
 	return append(p, simpleInd)
+}
+
+func (p SimplePopulation) Pop() (ga.Population, ga.Individual) {
+	return NewSimplePopulation(0), NewSimpleIndividual()
 }

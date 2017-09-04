@@ -7,7 +7,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/rms1000watt/hello-world-genetic-algorithm/concurrent"
 	"github.com/rms1000watt/hello-world-genetic-algorithm/ga"
 	"github.com/rms1000watt/hello-world-genetic-algorithm/simple"
 )
@@ -26,51 +25,35 @@ func init() {
 }
 
 func main() {
-	migrationCh := make(chan ga.Individual, populationSize*2)
+	migration := simple.NewSimpleMigration(populationSize * 2)
+
 	population := simple.NewSimplePopulation(populationSize)
 	evolver := simple.NewSimpleEvolver()
-	Run(population, evolver, migrationCh)
+	Run(population, evolver, migration)
 
-	flushMigrationCh(migrationCh)
+	migration.Flush()
 
-	population = simple.NewSimplePopulation(populationSize)
-	evolver = concurrent.NewConcurrentEvolver()
-	RunConcurrent(population, evolver, migrationCh)
+	// population = simple.NewSimplePopulation(populationSize)
+	// evolver = concurrent.NewConcurrentEvolver()
+	// RunConcurrent(population, evolver, migration)
 }
 
-func RunConcurrent(pop ga.Population, evolver ga.Evolver, migrationCh chan ga.Individual) {
+func RunConcurrent(pop ga.Population, evolver ga.Evolver, migration ga.Migration) {
 	for i := 0; i < runtime.GOMAXPROCS(0); i++ {
-		go Run(pop, evolver, migrationCh)
+		go Run(pop, evolver, migration)
 	}
 }
 
-func Run(pop ga.Population, evolver ga.Evolver, migrationCh chan ga.Individual) {
+func Run(pop ga.Population, evolver ga.Evolver, migration ga.Migration) {
 	now := time.Now()
 	fmt.Println("Population Size:", populationSize)
 	fmt.Println("Iterations:", iterations)
 	fmt.Println("Start Grade:", pop.Grade())
 
 	for i := 0; i < iterations; i++ {
-		pop = evolver.Evolve(pop, retainSize, mutationFactor, migrationCh)
+		pop = evolver.Evolve(pop, retainSize, mutationFactor, migration)
 	}
 
 	fmt.Println("Done Grade:", pop.Grade())
 	fmt.Println("Run Time:", time.Since(now))
-}
-
-func flushMigrationCh(migrationCh chan ga.Individual) {
-	cnt := int(0)
-	for {
-		select {
-		case <-migrationCh:
-			fmt.Println("cnt++")
-			cnt++
-		default:
-			fmt.Println("goto here")
-			goto here
-		}
-	}
-here:
-
-	fmt.Println("Flushed from migration channel:", cnt)
 }

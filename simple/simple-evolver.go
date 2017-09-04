@@ -8,7 +8,11 @@ import (
 
 type SimpleEvolver struct{}
 
-func (e SimpleEvolver) Evolve(pop ga.Population, retain, mutationFactor int, migrationCh chan ga.Individual) ga.Population {
+func NewSimpleEvolver() ga.Evolver {
+	return SimpleEvolver{}
+}
+
+func (e SimpleEvolver) Evolve(pop ga.Population, retain, mutationFactor int, migration ga.Migration) ga.Population {
 	// Get the population size for later
 	popSize := pop.Length()
 
@@ -39,12 +43,8 @@ func (e SimpleEvolver) Evolve(pop ga.Population, retain, mutationFactor int, mig
 		dad := pop.At(dInd)
 
 		child := mom.Breed(dad)
-		pop = pop.Add(child)
+		pop = pop.Push(child)
 	}
 
 	return pop
-}
-
-func NewSimpleEvolver() ga.Evolver {
-	return SimpleEvolver{}
 }

@@ -6,27 +6,18 @@ import (
 	"github.com/rms1000watt/hello-world-genetic-algorithm/ga"
 )
 
-type SimpleMigration struct {
-	Count       int
-	Max         int
-	MigrationCh chan SimpleIndividual
-}
+type SimpleMigration chan SimpleIndividual
 
 func NewSimpleMigration(size int) ga.Migration {
-	return SimpleMigration{
-		Max:         size,
-		MigrationCh: make(chan SimpleIndividual, size),
-	}
+	return SimpleMigration(make(chan SimpleIndividual, size))
 }
 
 func (m SimpleMigration) Pop() (ga.Individual, bool) {
-	if m.Count == 0 {
-		fmt.Println("Migration empty")
+	if len(m) == 0 {
 		return nil, false
 	}
 
-	m.Count--
-	return <-m.MigrationCh, true
+	return <-m, true
 }
 
 func (m SimpleMigration) Push(ind ga.Individual) bool {
@@ -36,12 +27,11 @@ func (m SimpleMigration) Push(ind ga.Individual) bool {
 		return false
 	}
 
-	if m.Count == m.Max {
-		fmt.Println("Migration full")
+	if len(m) == cap(m) {
 		return false
 	}
 
-	m.MigrationCh <- simpleInd
+	m <- simpleInd
 	return true
 }
 
@@ -49,7 +39,7 @@ func (m SimpleMigration) Flush() {
 	cnt := int(0)
 	for {
 		select {
-		case <-m.MigrationCh:
+		case <-m:
 			cnt++
 		default:
 			goto here
@@ -58,4 +48,8 @@ func (m SimpleMigration) Flush() {
 here:
 
 	fmt.Println("Flushed from migration:", cnt)
+}
+
+func (m SimpleMigration) Length() int {
+	return len(m)
 }

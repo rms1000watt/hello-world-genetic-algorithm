@@ -12,7 +12,7 @@ func NewSimpleEvolver() ga.Evolver {
 	return SimpleEvolver{}
 }
 
-func (e SimpleEvolver) Evolve(pop ga.Population, retain, mutationFactor int, migration ga.Migration) ga.Population {
+func (e SimpleEvolver) Evolve(pop ga.Population, retain, mutationFactor, migrationFactor int, migration ga.Migration) ga.Population {
 	// Get the population size for later
 	popSize := pop.Length()
 

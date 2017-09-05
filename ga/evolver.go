@@ -1,5 +1,5 @@
 package ga
 
 type Evolver interface {
-	Evolve(Population, int, int, Migration) Population
+	Evolve(Population, int, int, int, Migration) Population
 }

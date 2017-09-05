@@ -1,9 +1,7 @@
 package ga
 
-// Fit is rated from 0 - 100
-// where 0 is worst and 100 is best
 type Individual interface {
-	Fit() int
+	Fit() int // Rated from 0 - 100. 0 is worst, 100 is best
 	Value() interface{}
 	Breed(Individual) Individual
 }

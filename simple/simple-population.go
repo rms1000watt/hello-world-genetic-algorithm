@@ -74,7 +74,7 @@ func (p SimplePopulation) Length() int {
 func (p SimplePopulation) Mutate(mutationFactor int) ga.Population {
 	var newPop SimplePopulation
 	for _, ind := range p {
-		if rand.Intn(100) > mutationFactor {
+		if rand.Intn(100) < mutationFactor {
 			newPop = append(newPop, NewSimpleIndividual())
 			continue
 		}
@@ -97,6 +97,38 @@ func (p SimplePopulation) Push(ind ga.Individual) ga.Population {
 	return append(p, simpleInd)
 }
 
-func (p SimplePopulation) Pop() (ga.Population, ga.Individual) {
-	return NewSimplePopulation(0), NewSimpleIndividual()
+func (p SimplePopulation) Pop() (ga.Individual, ga.Population) {
+	return p[0], p[1:]
+}
+
+func (p SimplePopulation) Immigrate(maxMigration int, migration ga.Migration) ga.Population {
+	for i := 0; i < maxMigration; i++ {
+		ind, ok := migration.Pop()
+		if !ok {
+			return p
+		}
+
+		simpleInd, ok := ind.(SimpleIndividual)
+		if !ok {
+			fmt.Println("Immigrate: Type conversion failed for simple individual.")
+			return p
+		}
+
+		p = p.Push(simpleInd).(SimplePopulation)
+	}
+
+	return p
+}
+
+func (p SimplePopulation) Emigrate(maxMigration int, migration ga.Migration) ga.Population {
+	for i := 0; i < maxMigration; i++ {
+		poppedInd, poppedPop := p.Pop()
+		p = poppedPop.(SimplePopulation)
+
+		if ok := migration.Push(poppedInd); !ok {
+			return p
+		}
+	}
+
+	return p
 }

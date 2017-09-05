@@ -4,4 +4,5 @@ type Migration interface {
 	Pop() (Individual, bool)
 	Push(Individual) bool
 	Flush()
+	Length() int
 }

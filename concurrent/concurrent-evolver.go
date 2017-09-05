@@ -4,6 +4,7 @@ import (
 	"math/rand"
 
 	"github.com/rms1000watt/hello-world-genetic-algorithm/ga"
+	"github.com/rms1000watt/hello-world-genetic-algorithm/simple"
 )
 
 type ConcurrentEvolver struct{}
@@ -12,7 +13,7 @@ func NewConcurrentEvolver() ga.Evolver {
 	return ConcurrentEvolver{}
 }
 
-func (e ConcurrentEvolver) Evolve(pop ga.Population, retain, mutationFactor int, migration ga.Migration) ga.Population {
+func (e ConcurrentEvolver) Evolve(pop ga.Population, retain, mutationFactor, migrationFactor int, migration ga.Migration) ga.Population {
 	// Get the population size for later
 	popSize := pop.Length()
 
@@ -23,17 +24,17 @@ func (e ConcurrentEvolver) Evolve(pop ga.Population, retain, mutationFactor int,
 	pop = pop.Best(retain)
 
 	// Emigrate some of the best
-	for i := 0; i < rand.Intn(3); i++ {
-		pop, ind := pop.Pop()
-		if ok := migration.Push(ind); !ok {
-			break
-		}
+	if rand.Intn(100) < migrationFactor {
+		// TODO: Tune this..
+		emigrateSize := rand.Intn(pop.Length() / 1)
+		pop = pop.Emigrate(emigrateSize, migration)
 	}
 
 	// Immigrate some of the best
+	pop = pop.Immigrate(rand.Intn(popSize-pop.Length()), migration)
 
 	// Randomly add new individuals to next population set
-	newPop := NewSimplePopulation(popSize - retain - rand.Intn(popSize-retain))
+	newPop := simple.NewSimplePopulation(popSize - pop.Length() - rand.Intn(popSize-pop.Length()))
 
 	// Merge the random individuals
 	pop = pop.Merge(newPop)
@@ -55,6 +56,8 @@ func (e ConcurrentEvolver) Evolve(pop ga.Population, retain, mutationFactor int,
 		child := mom.Breed(dad)
 		pop = pop.Push(child)
 	}
+
+	// TODO: Grade the population.. if high grade.. kill early?
 
 	return pop
 }

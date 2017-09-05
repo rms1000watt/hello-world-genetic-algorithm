@@ -1,9 +1,7 @@
 package ga
 
-// Grade is rated from 0 - 100
-// where 0 is worst and 100 is best
 type Population interface {
-	Grade() int
+	Grade() int // Rated from 0 - 100. 0 is worst, 100 is best
 	Sort() Population
 	Best(int) Population
 	Merge(Population) Population
@@ -11,5 +9,7 @@ type Population interface {
 	Mutate(int) Population
 	At(int) Individual
 	Push(Individual) Population
-	Pop() (Population, Individual)
+	Pop() (Individual, Population)
+	Immigrate(int, Migration) Population
+	Emigrate(int, Migration) Population
 }

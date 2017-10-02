@@ -51,7 +51,7 @@ func main() {
 }
 
 func RunSimpleConcurrent(populationSize int, evolver ga.Evolver, migration ga.Migration) {
-	for i := 0; i < runtime.GOMAXPROCS(0); i++ {
+	for i := 0; i < runtime.GOMAXPROCS(0)-1; i++ {
 		wg.Add(1)
 		go Run(simple.NewSimplePopulation(populationSize), evolver, migration)
 	}
